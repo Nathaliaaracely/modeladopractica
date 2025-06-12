@@ -39,4 +39,5 @@ finance_agent = Agent(
 app = Playground(agents=[web_agent, finance_agent]).get_app()
 
 if __name__ == "__main__":
-    serve_playground_app("playground:app", reload=True)
+    import uvicorn
+    uvicorn.run("playground:app", host="0.0.0.0", port=8080)

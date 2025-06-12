@@ -1,0 +1,8 @@
+agno
+fastapi
+uvicorn
+python-multipart
+pydantic
+sqlalchemy
+requests
+yfinance
