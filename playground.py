@@ -39,5 +39,24 @@ finance_agent = Agent(
 app = Playground(agents=[web_agent, finance_agent]).get_app()
 
 if __name__ == "__main__":
+    import os
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=3000)
+    
+    # Configurar el puerto para Cloud Run
+    port = int(os.environ.get('PORT', 8080))
+    
+    # Configurar el host y el puerto
+    host = "0.0.0.0"
+    
+    # Configurar el número de workers basado en el número de cores disponibles
+    workers = int(os.environ.get('WEB_CONCURRENCY', 1))
+    
+    # Ejecutar la aplicación
+    uvicorn.run(
+        "playground:app",
+        host=host,
+        port=port,
+        log_level="info",
+        workers=workers,
+        reload=True  # Solo para desarrollo local
+    )
