@@ -51,12 +51,22 @@ if __name__ == "__main__":
     # Configurar el número de workers basado en el número de cores disponibles
     workers = int(os.environ.get('WEB_CONCURRENCY', 1))
     
+    # Verificar si estamos en producción
+    if os.environ.get('ENVIRONMENT') == 'production':
+        # Configuración para producción
+        reload = False
+        log_level = "info"
+    else:
+        # Configuración para desarrollo
+        reload = True
+        log_level = "debug"
+    
     # Ejecutar la aplicación
     uvicorn.run(
         "playground:app",
         host=host,
         port=port,
-        log_level="info",
+        log_level=log_level,
         workers=workers,
-        reload=True  # Solo para desarrollo local
+        reload=reload
     )
