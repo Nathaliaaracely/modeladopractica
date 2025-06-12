@@ -1,0 +1,20 @@
+# Estos son los archivos que no necesitamos en Cloud Run
+__pycache__/
+*.pyc
+.env
+.git
+.gitignore
+.gitattributes
+.vscode/
+.idea/
+*.log
+*.swp
+*.swo
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+node_modules/
+build/
+dist/
