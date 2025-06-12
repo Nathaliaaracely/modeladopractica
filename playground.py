@@ -8,7 +8,7 @@ from agno.tools.yfinance import YFinanceTools
 agent_storage: str = "tmp/agents.db"
 
 web_agent = Agent(
-    name="Nathalia Aracely",
+    name="Nahalia Aracely",
     model=Groq(id="llama-3.3-70b-versatile"),
     tools=[DuckDuckGoTools()],
     instructions=["Always include sources"],
@@ -25,7 +25,7 @@ web_agent = Agent(
 )
 
 finance_agent = Agent(
-    name="Finance Agent",
+    name="Nahalia Aracely",
     model=Groq(id="llama-3.3-70b-versatile"),
     tools=[YFinanceTools(stock_price=True, analyst_recommendations=True, company_info=True, company_news=True)],
     instructions=["Always use tables to display data"],
@@ -40,33 +40,5 @@ app = Playground(agents=[web_agent, finance_agent]).get_app()
 
 if __name__ == "__main__":
     import os
-    import uvicorn
-    
-    # Configurar el puerto para Cloud Run
     port = int(os.environ.get('PORT', 8080))
-    
-    # Configurar el host y el puerto
-    host = "0.0.0.0"
-    
-    # Configurar el número de workers basado en el número de cores disponibles
-    workers = int(os.environ.get('WEB_CONCURRENCY', 1))
-    
-    # Verificar si estamos en producción
-    if os.environ.get('ENVIRONMENT') == 'production':
-        # Configuración para producción
-        reload = False
-        log_level = "info"
-    else:
-        # Configuración para desarrollo
-        reload = True
-        log_level = "debug"
-    
-    # Ejecutar la aplicación
-    uvicorn.run(
-        "playground:app",
-        host=host,
-        port=port,
-        log_level=log_level,
-        workers=workers,
-        reload=reload
-    )
+    serve_playground_app("playground:app", reload=False, port=port)
