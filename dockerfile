@@ -17,7 +17,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY --from=frontend /app/agent-ui/out ./aienv/static
 
 # Exponer el puerto (ajusta si usas otro)
-EXPOSE 8000
+EXPOSE 7777
 
 # Comando para lanzar el backend (ajusta según tu entrypoint)
 CMD ["python", "aienv/Lib/site-packages/agno/app/playground/serve.py"]
