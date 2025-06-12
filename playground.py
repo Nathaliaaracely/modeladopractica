@@ -1,3 +1,13 @@
+import os
+from pathlib import Path
+
+# Configurar el directorio base
+BASE_DIR = Path(__file__).parent
+
+# Configurar la ruta para el archivo de base de datos
+db_path = BASE_DIR / "tmp" / "agents.db"
+db_path.parent.mkdir(exist_ok=True)
+
 from agno.agent import Agent
 from agno.models.groq import Groq
 from agno.playground import Playground, serve_playground_app
@@ -5,22 +15,15 @@ from agno.storage.sqlite import SqliteStorage
 from agno.tools.duckduckgo import DuckDuckGoTools
 from agno.tools.yfinance import YFinanceTools
 
-agent_storage: str = "tmp/agents.db"
-
 web_agent = Agent(
     name="Nahalia Aracely",
     model=Groq(id="llama-3.3-70b-versatile"),
     tools=[DuckDuckGoTools()],
     instructions=["Always include sources"],
-    # Store the agent sessions in a sqlite database
-    storage=SqliteStorage(table_name="web_agent", db_file=agent_storage),
-    # Adds the current date and time to the instructions
+    storage=SqliteStorage(table_name="web_agent", db_file=str(db_path)),
     add_datetime_to_instructions=True,
-    # Adds the history of the conversation to the messages
     add_history_to_messages=True,
-    # Number of history responses to add to the messages
     num_history_responses=5,
-    # Adds markdown formatting to the messages
     markdown=True,
 )
 
@@ -29,7 +32,7 @@ finance_agent = Agent(
     model=Groq(id="llama-3.3-70b-versatile"),
     tools=[YFinanceTools(stock_price=True, analyst_recommendations=True, company_info=True, company_news=True)],
     instructions=["Always use tables to display data"],
-    storage=SqliteStorage(table_name="finance_agent", db_file=agent_storage),
+    storage=SqliteStorage(table_name="finance_agent", db_file=str(db_path)),
     add_datetime_to_instructions=True,
     add_history_to_messages=True,
     num_history_responses=5,
@@ -39,6 +42,5 @@ finance_agent = Agent(
 app = Playground(agents=[web_agent, finance_agent]).get_app()
 
 if __name__ == "__main__":
-    import os
     port = int(os.environ.get('PORT', 8080))
-    serve_playground_app("playground:app", reload=False, port=port)
+    serve_playground_app("playground:app", reload=False, port=port, host="0.0.0.0")
